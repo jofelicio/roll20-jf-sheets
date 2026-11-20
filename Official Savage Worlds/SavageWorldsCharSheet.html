@@ -2279,6 +2279,8 @@ const compendiumDataLookup = function({queue, callback, origBlock,IDPathways}){
     lookupBurndown(queue, productArray, searchArray, callback, origBlock,IDPathways);
 };
 
+const dataSource = (block) => / armor/i.test(block.subcategory) ? block.subcategory : block.Category;
+
 //Actually queries the compendium to get details on the items in each category using the searchArray assembled in compendiumLookup
 //ARGUMENTS
 //statblocks (array): the objects whose attachments are looked up, starting with the object dropped from the compendium
@@ -2296,9 +2298,7 @@ const lookupBurndown = function(statblocks, productArray, searchArray, callback,
                 origBlock[`data-${category}`] = origBlock[`data-${category}`].map((obj) => {
                     obj.lookupType = obj.lookupType || category;
                     let fullPHEG = getPHEGDetails(obj, productArray, dataArr);
-                    fullPHEG.datasource = fullPHEG.datasource ||
-                        origBlock.subcategory || 
-                        origBlock.Category;
+                    fullPHEG.datasource = fullPHEG.datasource || dataSource(origBlock);
                     return fullPHEG;
                 });
             }
@@ -2323,7 +2323,7 @@ const additionalLookups = function(statblock,origBlock){
                             let jArr = JSON.parse(nVal);
                             if(Array.isArray(jArr)){
                                 jArr = jArr.map((o)=>{
-                                    o.datasource = obj.data.subcategory || obj.data.Category;
+                                    o.datasource = dataSource(obj.data);
                                     if(!o.datasource){
                                         delete o.datasource;
                                     }
@@ -14706,7 +14706,7 @@ on(
                 </div>
                 <div class="vehicleStatContainer"> 
                   <div class="vehicleCrewBox"> 
-                    <input class="shipMainStatsInput" type="number" name="attr_vehiclecrew"/>
+                    <input class="shipMainStatsInput" type="text" name="attr_vehiclecrew"/>
                   </div>
                   <label class="shipMainStatLabel" data-i18n="crew">Crew:</label>
                 </div>
@@ -15240,7 +15240,7 @@ on(
                 </div>
                 <div class="vehicleStatContainer"> 
                   <div class="vehicleCrewBox"> 
-                    <input class="shipMainStatsInput" type="number" name="attr_ra_vehiclecrew"/>
+                    <input class="shipMainStatsInput" type="text" name="attr_ra_vehiclecrew"/>
                   </div>
                   <label class="shipMainStatLabel" data-i18n="crew">Crew:</label>
                 </div>
